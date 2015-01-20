@@ -4,11 +4,11 @@ var Game = {
   possibleMoves: 0,
   movesTaken: 0,
   gameOver: false,
-  playerOneWinCount: 0,
-  playerTwoWinCount: 0
+  squaresToWin: 0
 }
 
 $(document).ready(function() {
+  Game.squaresToWin = 5;
   generateGrid(25,25);
 });
 
@@ -61,6 +61,22 @@ function winCheck(currentCell) {
     var currentMark = currentCell.text();
     var currentRow = parseInt(currentCell.parent().attr('id').split('-')[1]);
     currentCell = parseInt(currentCell.attr('id').split('-')[1]);
+
+    // DIAGONAL TOP-RIGHT CHECK
+    for (i=1; i<=Game.squaresToWin; i++) {
+      if ( $('#row-' + (currentRow - i)).find('#cell-' + (currentCell + i)).text() == currentMark ) {
+        console.log( 'row ' + (currentRow - i) + ' cell ' + (currentCell + i) );
+        console.log(i);
+        if (i == Game.squaresToWin) {
+          setWin(currentMark);
+        }
+      }
+      else {
+        // CALL ANOTHER CHECK
+        console.log(i + "END");
+        return;
+      }
+    }
 
     // All the readable positions 
     var left            = $('#row-' + currentRow).find('#cell-' + (currentCell - 1)).text();
@@ -150,7 +166,6 @@ function winCheck(currentCell) {
 }
 
 function drawCheck() {
-  console.log("AAAAA");
   if (Game.movesTaken == Game.possibleMoves) {
     Game.gameOver = true;
     alert("Cat's game");
