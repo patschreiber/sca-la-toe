@@ -62,21 +62,7 @@ function winCheck(currentCell) {
     var currentRow = parseInt(currentCell.parent().attr('id').split('-')[1]);
     currentCell = parseInt(currentCell.attr('id').split('-')[1]);
 
-    // DIAGONAL TOP-RIGHT CHECK
-    for (i=1; i<=Game.squaresToWin; i++) {
-      if ( $('#row-' + (currentRow - i)).find('#cell-' + (currentCell + i)).text() == currentMark ) {
-        console.log( 'row ' + (currentRow - i) + ' cell ' + (currentCell + i) );
-        console.log(i);
-        if (i == Game.squaresToWin) {
-          setWin(currentMark);
-        }
-      }
-      else {
-        // CALL ANOTHER CHECK
-        console.log(i + "END");
-        return;
-      }
-    }
+    checks.topRight(currentRow, currentCell, currentMark);
 
     // All the readable positions 
     var left            = $('#row-' + currentRow).find('#cell-' + (currentCell - 1)).text();
@@ -96,73 +82,36 @@ function winCheck(currentCell) {
     var farBottomRight  = $('#row-' + (currentRow + 2)).find('#cell-' + (currentCell + 2)).text();
     var farBottom       = $('#row-' + (currentRow + 2)).find('#cell-' + currentCell).text();
     var farBottomLeft   = $('#row-' + (currentRow + 2)).find('#cell-' + (currentCell - 2)).text();
-
-
-    // Check diagonal top-left -> bottom-right
-    if ( topLeft == currentMark && bottomRight == currentMark ) {
-      setWin(currentMark);
-    }
-
-    // Check far diagonal top-left 
-    if ( farTopLeft == currentMark && topLeft == currentMark ) {
-      setWin(currentMark);
-    }
-
-    // Check far top
-    if ( farTop == currentMark && top == currentMark ) {
-      setWin(currentMark);
-    }
-
-    // Check far diagonal top-right
-    if ( topRight == currentMark && farTopRight == currentMark ) {
-      setWin(currentMark);
-    }
-
-    // Check diagonal top-right -> bottom-left
-    if ( topRight == currentMark && bottomLeft == currentMark ) {
-      setWin(currentMark);
-    }
-
-    // Check far left
-    if ( farLeft == currentMark && left == currentMark ) {
-      setWin(currentMark);
-    }
-
-    // Check far right
-    if ( farRight == currentMark && right == currentMark ) {
-      setWin(currentMark);
-    }
-
-    // Check horizontal
-    if ( left == currentMark && right == currentMark ) {
-      setWin(currentMark);
-    }
-
-    // Check vertical
-    if ( top == currentMark && bottom == currentMark ) {
-      setWin(currentMark);
-    }
-
-    // Check far bottom-right
-    if ( farBottomRight == currentMark && bottomRight == currentMark ) {
-      setWin(currentMark);
-    }
-
-    // Check far bottom-right
-    if ( farBottomRight == currentMark && bottomRight == currentMark ) {
-      setWin(currentMark);
-    }
-
-    // Check far bottom
-    if ( bottom == currentMark && farBottom == currentMark ) {
-      setWin(currentMark);
-    }
-
-    // Check far bottom-left
-    if ( farBottomLeft == currentMark && bottomLeft ) {
-      setWin(currentMark);
-    }
   }
+}
+
+var checks = {
+  // Checks are done for each cell off of the current cell (root). 
+  // For instance, the right check for a win would be [r]->[]->[]
+  // where [r] is the root cell of the check. A check where the root
+  // cell is in the middle would be []<-[r]->[]
+
+  // DIAGONAL TOP-RIGHT CHECK
+  topRight: function(currentRow, currentCell, currentMark) {
+    for (i=1; i<=Game.squaresToWin; i++) {
+      console.log(i);
+      
+      if ( $('#row-' + (currentRow - i)).find('#cell-' + (currentCell + i)).text() == currentMark ) {
+        // Include the current cell to determine win, so its 4 squares to the rop right from the current cell to determine win.
+        if (i === (Game.squaresToWin - 1)) {
+          setWin(currentMark);
+        }
+      }
+      else {
+        // CALL ANOTHER CHECK
+        console.log(i + "END");
+        return;
+      }
+    }
+  },
+
+  // RIGHT CHECK
+  right: function() {},
 }
 
 function drawCheck() {
